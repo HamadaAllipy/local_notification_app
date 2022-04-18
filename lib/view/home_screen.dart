@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../helper/notification_helper.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -19,10 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ElevatedButton(
               onPressed: () {
-                sendNotification(
-                  title: 'hamada',
-                  body: 'my name',
-                );
+                NotificationHelper.sendNotification(title: 'title', body: 'body');
               },
               child: const Text(
                 'Simple Notification',
@@ -53,9 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
     const IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
       requestAlertPermission: true,
@@ -64,27 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     const InitializationSettings initializationSettings =
         InitializationSettings(
-            android: initializationSettingsAndroid,
             iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high channel', 'High Importance',
-        description: 'This channel is importance notification',
-        importance: Importance.max);
 
     flutterLocalNotificationsPlugin.show(
       0,
       title,
       body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-
-        ),
-      ),
+      const NotificationDetails(),
     );
   }
 }
