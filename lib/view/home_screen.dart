@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:local_notifications/helper/notification_helper.dart';
+import 'package:local_notifications/view/second_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,6 +12,29 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    NotificationHelper.initNotification();
+    listenNotification();
+    super.initState();
+  }
+
+  listenNotification() {
+    NotificationHelper.onNotification.stream.listen(onClickedNotification);
+  }
+
+  void onClickedNotification(payload) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return SecondScreen(
+            pay: payload,
+          );
+        },
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
@@ -19,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ElevatedButton(
               onPressed: () {
-                sendNotification(
-                  title: 'hamada',
-                  body: 'my name',
+                NotificationHelper.showNotification(
+                  title: 'title',
+                  body: 'body',
                 );
               },
               child: const Text(
@@ -41,48 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void sendNotification({
-    String? title,
-    String? body,
-  }) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high channel', 'High Importance',
-        description: 'This channel is importance notification',
-        importance: Importance.max);
-
-    flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-
         ),
       ),
     );
