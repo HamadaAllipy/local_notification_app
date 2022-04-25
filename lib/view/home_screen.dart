@@ -69,6 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ElevatedButton(
+              onPressed: () {
+                NotificationHelper.showScheduledNotificationDaily();
+              },
+              child: const Text(
+                'Periodically Show',
+              ),
+            ),
+            ElevatedButton(
               onPressed: () {},
               child: const Text(
                 'Remove notification',

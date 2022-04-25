@@ -65,4 +65,22 @@ class NotificationHelper {
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
+  static showScheduledNotificationDaily({
+    String? title,
+    String? body,
+  }) async {
+    tz.initializeTimeZones();
+    _notification.periodicallyShow(
+      0,
+      title,
+      body,
+      RepeatInterval.daily,
+      const NotificationDetails(
+        android: AndroidNotificationDetails('channelId', 'channelName'),
+        iOS: IOSNotificationDetails(),
+      ),
+      payload: 'hamada.abs',
+      androidAllowWhileIdle: true,
+    );
+  }
 }
