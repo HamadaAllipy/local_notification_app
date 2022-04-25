@@ -1,5 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationHelper {
   static final FlutterLocalNotificationsPlugin _notification =
@@ -24,7 +26,7 @@ class NotificationHelper {
     /// initialize
     await _notification.initialize(
       settings,
-      onSelectNotification: (payload){
+      onSelectNotification: (payload) {
         onNotification.add(payload);
       },
     );
@@ -40,6 +42,27 @@ class NotificationHelper {
         iOS: IOSNotificationDetails(),
       ),
       payload: 'hamada.abs',
+    );
+  }
+
+  static showScheduledNotification({
+    String? title,
+    String? body,
+    required DateTime scheduleDate,
+  }) async {
+    tz.initializeTimeZones();
+    _notification.zonedSchedule(
+      0,
+      title,
+      body,
+      tz.TZDateTime.from(scheduleDate, tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails('channelId', 'channelName'),
+        iOS: IOSNotificationDetails(),
+      ),
+      payload: 'hamada.abs',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }

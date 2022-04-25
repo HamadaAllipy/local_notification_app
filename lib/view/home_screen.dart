@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:local_notifications/helper/notification_helper.dart';
 import 'package:local_notifications/view/second_screen.dart';
@@ -54,7 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                NotificationHelper.showScheduledNotification(
+                  scheduleDate: DateTime.now().add(const Duration(seconds: 5)),
+                );
+                const snackBar =  SnackBar(
+                  content: Text(
+                    'Scheduled in 5 seconds',
+                  ),
+                );
+                ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(snackBar);
+              },
               child: const Text(
                 'Scheduled notification',
               ),
