@@ -56,7 +56,7 @@ class NotificationHelper {
       title,
       body,
       tz.TZDateTime.from(scheduleDate, tz.local),
-      const NotificationDetails(
+       const NotificationDetails(
         android: AndroidNotificationDetails('channelId', 'channelName'),
         iOS: IOSNotificationDetails(),
       ),
@@ -65,6 +65,28 @@ class NotificationHelper {
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
+  static showScheduledNotificationSpecificTime({
+    String? title,
+    String? body,
+  }) async {
+    tz.initializeTimeZones();
+    _notification.zonedSchedule(
+      0,
+      title,
+      body,
+      _scheduleDaily(const Time(0,0,5)),
+       const NotificationDetails(
+        android: AndroidNotificationDetails('channelId', 'channelName'),
+        iOS: IOSNotificationDetails(),
+      ),
+      payload: 'hamada.abs',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
+
+
   static showScheduledNotificationDaily({
     String? title,
     String? body,
@@ -82,5 +104,20 @@ class NotificationHelper {
       payload: 'hamada.abs',
       androidAllowWhileIdle: true,
     );
+  }
+
+  static tz.TZDateTime _scheduleDaily(Time time) {
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduleDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+      now.minute,
+      now.second,
+    );
+    return scheduleDate.isBefore(now)?
+    scheduleDate.add(const Duration(days: 1)):scheduleDate;
   }
 }
